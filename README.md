@@ -9,5 +9,9 @@
 4° Passo é adicionar as dependencias do Axios, só apertar em "Add Dependency" que está no erro em vermelho  
   
 5° Passo  é apertar para expandir em uma nova tela do lado da versão "Web"  
-<img width="367" height="369" alt="image" src="https://github.com/user-attachments/assets/155bc56c-a14e-4f49-b3c1-55593ceef5fa" />  
-  
+<img width="367" height="369" alt="image" src="https://github.com/user-attachments/assets/155bc56c-a14e-4f49-b3c1-55593ceef5fa" />    
+
+
+
+
+#OBS: Na linha13 vaiu ter o link da API. Você tem que trocar o ip antes ":8080" para seu ip no seu computador
