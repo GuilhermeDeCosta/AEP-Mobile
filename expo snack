@@ -1,0 +1,134 @@
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
+import axios from 'axios';
+
+// 🚀 COMO ESTÁ NA MESMA MÁQUINA VIA NAVEGADOR, PODE USAR LOCALHOST PERFEITAMENTE
+const API_URL = 'http://192.168.100.118:8080/api/v1/parts/search';
+
+export default function App() {
+  const [arrayDados, setArrayDados] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    buscarPecas();
+  }, []);
+
+  async function buscarPecas() {
+    setIsLoading(true);
+    try {
+      console.log('Buscando peças em:', API_URL);
+      const resultado = await axios.get(API_URL, { timeout: 8000 });
+      
+      // Mapeia a estrutura vinda da sua classe PartResponse
+      if (resultado.status === 200 && resultado.data?.data?.parts) {
+        setArrayDados(resultado.data.data.parts);
+      } else if (resultado.status === 200 && resultado.data?.parts) {
+        setArrayDados(resultado.data.parts);
+      } else if (resultado.status === 200 && Array.isArray(resultado.data)) {
+        setArrayDados(resultado.data);
+      } else {
+        setArrayDados([]);
+      }
+    } catch (error) {
+      console.log('Erro detalhado:', error);
+      alert('Erro de conexão: Certifique-se de que o Spring Boot está rodando em localhost:8080 e que o CORS está ativo.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* HEADER */}
+      <View style={styles.header}>
+        <Text style={styles.titulo}>🔍 BUSCA PEÇAS (WEB)</Text>
+        <Text style={styles.subtitulo}>Catálogo Integrado via Localhost</Text>
+      </View>
+
+      {/* REFRESH */}
+      <View style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 15 }}>
+        <TouchableOpacity onPress={buscarPecas} style={styles.botaoAtualizar}>
+          <Text style={styles.textoBotao}>🔄 Sincronizar Catálogo</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.separador}></View>
+
+      {/* LISTA */}
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#2A5C84" />
+          <Text style={{ marginTop: 10, color: '#64748b' }}>Consultando banco de dados...</Text>
+        </View>
+      ) : (
+        <FlatList
+          contentContainerStyle={{ paddingHorizontal: 10, flexGrow: 1 }}
+          data={arrayDados}
+          keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()}
+          ListEmptyComponent={
+            <View style={styles.containerVazio}>
+              <Text style={styles.textoVazio}>Nenhuma peça encontrada.</Text>
+              <Text style={styles.subTextoVazio}>Verifique se há registros no seu banco de dados ou na lista da API.</Text>
+            </View>
+          }
+          renderItem={({ item }) => (
+            <View style={styles.itemList}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.pecaNome}>⚙️ {item.name || 'Peça Sem Nome'}</Text>
+                <View style={styles.tagEstoque}>
+                  <Text style={styles.tagTexto}>{item.stock} un</Text>
+                </View>
+              </View>
+
+              <Text style={styles.pecaCodigo}>Cód OEM: {item.code || 'N/A'}</Text>
+              
+              <View style={styles.rowInfo}>
+                <Text style={styles.pecaMarca}>🚗 Marca: <Text style={{fontWeight: '700'}}>{item.brand?.name || 'Geral'}</Text></Text>
+                <Text style={styles.pecaPreco}>R$ {Number(item.price || 0).toFixed(2).replace('.', ',')}</Text>
+              </View>
+
+              {item.description ? (
+                <View style={styles.boxDescricao}>
+                  <Text style={styles.pecaDescricao}>"{item.description}"</Text>
+                </View>
+              ) : null}
+            </View>
+          )}
+        />
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f8fafc' },
+  header: { backgroundColor: '#0f172a', paddingTop: 30, paddingBottom: 20, alignItems: 'center', borderBottomWidth: 3, borderColor: '#2A5C84' },
+  titulo: { color: '#fff', fontSize: 20, fontWeight: '900', letterSpacing: 1 },
+  subtitulo: { color: '#94a3b8', fontSize: 12, marginTop: 4 },
+  separador: { borderTopWidth: 1, borderColor: '#e2e8f0', marginBottom: 10 },
+  botaoAtualizar: { backgroundColor: '#2A5C84', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20 },
+  textoBotao: { color: 'white', fontWeight: 'bold', fontSize: 14 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 40 },
+  itemList: { backgroundColor: '#ffffff', borderRadius: 8, padding: 15, marginBottom: 10, borderWidth: 1, borderColor: '#e2e8f0' },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  pecaNome: { fontSize: 15, fontWeight: 'bold', color: '#1e293b', flex: 1 },
+  tagEstoque: { backgroundColor: '#e2e8f0', paddingVertical: 2, paddingHorizontal: 6, borderRadius: 4 },
+  tagTexto: { fontSize: 11, fontWeight: 'bold', color: '#475569' },
+  pecaCodigo: { fontSize: 12, color: '#64748b', marginBottom: 8 },
+  rowInfo: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  pecaMarca: { fontSize: 13, color: '#334155' },
+  pecaPreco: { fontSize: 16, fontWeight: '800', color: '#10b981' },
+  boxDescricao: { backgroundColor: '#f8fafc', padding: 8, borderRadius: 4, marginTop: 8, borderLeftWidth: 3, borderColor: '#cbd5e1' },
+  pecaDescricao: { fontSize: 12, fontStyle: 'italic', color: '#64748b' },
+  containerVazio: { alignItems: 'center', marginTop: 40, paddingHorizontal: 20 },
+  textoVazio: { fontSize: 14, fontWeight: 'bold', color: '#64748b' },
+  subTextoVazio: { fontSize: 12, color: '#94a3b8', textAlign: 'center', marginTop: 4 }
+});
