@@ -1,4 +1,4 @@
-<img width="367" height="369" alt="image" src="https://github.com/user-attachments/assets/571d15c9-a867-4462-a31e-50725c73f1dd" />#Passo a passo para iniciar o mobile de forma prática  
+#Passo a passo para iniciar o mobile de forma prática  
   
 1°Passo deve ser iniciar a API em https://github.com/GuilhermeDeCosta/AEP-Back  
   
