@@ -14,4 +14,4 @@
 
 
 
-# OBS: Na linha13 vaiu ter o link da API. Você tem que trocar o ip antes ":8080" para seu ip no seu computador
+# OBS: Na linha1 3 vai ter o link da API. Você tem que trocar o ip antes ":8080" para seu ip no seu computador
