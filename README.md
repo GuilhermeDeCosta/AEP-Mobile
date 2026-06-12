@@ -1,4 +1,4 @@
-#Passo a passo para iniciar o mobile de forma prática  
+# Passo a passo para iniciar o mobile de forma prática  
   
 1°Passo deve ser iniciar a API em https://github.com/GuilhermeDeCosta/AEP-Back  
   
@@ -14,4 +14,4 @@
 
 
 
-#OBS: Na linha13 vaiu ter o link da API. Você tem que trocar o ip antes ":8080" para seu ip no seu computador
+# OBS: Na linha13 vaiu ter o link da API. Você tem que trocar o ip antes ":8080" para seu ip no seu computador
